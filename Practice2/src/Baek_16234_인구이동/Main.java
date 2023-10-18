@@ -32,11 +32,10 @@ public class Main {
 			}
 		}
 		
-		int cnt = 0;
+		cnt = 0;
 
 		while(true) {
-			
-			boolean isMove = false;
+			boolean isTrue = false;
 			visited = new boolean[N][N];
 			
 			for (int i = 0; i < N; i++) {
@@ -47,31 +46,32 @@ public class Main {
 						sum = FindUnion(i,j);
 						num = list.size();
 						if(num > 1) {
-							int after = sum/num;
+							int after = (int) Math.floor(sum/num);
 							//인구 이동
 							Move(after);
-							isMove = true;
+							isTrue = true;
 						}
+						if(num == 0) break;
 					}
 				}
 			}
-			if(!isMove) break;
-			cnt++;
+			if(!isTrue) break;
+			else cnt++;
 		}
+		
 		System.out.println(cnt);
-		
-		
 	}//main
 	
+	//인구이동
 	public static void Move(int after) {
 		for (int i = 0; i < list.size(); i++) {
 			int[] now = list.get(i);
 			arr[now[0]][now[1]] = after;
-//			list.remove(i);
 		}
 		
 	}
 	
+	//연합찾기
 	public static int FindUnion(int x,int y) {
 		Queue<int[]> q = new LinkedList<>();
 		list = new ArrayList<>();
@@ -84,6 +84,7 @@ public class Main {
 		
 		while(!q.isEmpty()) {
 			int[] now = q.poll();
+			
 			for (int i = 0; i < 4; i++) {
 				int nx = dx[i] + now[0];
 				int ny = dy[i] + now[1];
@@ -94,7 +95,7 @@ public class Main {
 				int diff = Math.abs(arr[nx][ny] - arr[now[0]][now[1]]); //인구 차이
 				
 				//연합 생성
-				if(diff >= L && diff <= R) {
+				if(!visited[nx][ny] && diff >= L && diff <= R) {
 					list.add(new int[] {nx,ny});
 					visited[nx][ny] = true;
 					sum += arr[nx][ny];
